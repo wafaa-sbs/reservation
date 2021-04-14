@@ -1,0 +1,118 @@
+﻿@model IEnumerable<AppReservation.Models.Reservation>
+@using Microsoft.AspNetCore.Identity
+
+@{
+    ViewData["Title"] = "Reservations";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var usr = new IdentityUser();
+    var role = new IdentityRole();
+}
+
+<h2 class="text-center">Reservation</h2>
+
+<p>
+    @if (User.Identity.IsAuthenticated)
+    {
+        if (User.IsInRole("Student"))
+        {
+            <a class="text text-info" asp-action="Create">Create New</a>
+        }
+    }
+</p>
+
+@if (User.Identity.IsAuthenticated)
+{
+    if (User.IsInRole("Admin"))
+    {
+        <form method="post">
+            <div class="input-group mb-3">
+                <input name="dates" type="date" />
+                <div class="input-group-append">
+                    <input type="submit" value="submit" class="btn btn-dark" />
+                </div>
+            </div>
+
+        </form>
+    }
+}
+
+<table class="table table-striped table-bordered table-hover" style="text-align:center; color:#184D74; background-color: #ffffff; margin-top: 70px">
+    <thead class="thead-light">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Student.FullName)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.Student.classe)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.Date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cause)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Reserv)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="bg-white">
+                <td>
+                    @Html.DisplayFor(modelItem => item.Student.FullName)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Student.classe)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Cause)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Reserv.name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        if (User.IsInRole("Student"))
+                        {
+                            <a class="btn btn-info" style="" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                            <a class="btn btn-danger" style="opacity:70%" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        }
+                        else if (User.IsInRole("Admin"))
+                        {
+                            <div class="input-group mb-3">
+                                <a class="btn btn-info" style="margin-right:20px; margin-left:44px" asp-action="Confirm" asp-route-id="@item.Id">Confirm</a>
+                                <div class="input-group-append">
+                                    <a class="btn btn-danger" style="opacity:70%" asp-action="Decline" asp-route-id="@item.Id">Decline</a>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <a hidden class="btn btn-warning" asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                            <a hidden class="btn btn-primary" asp-action="Confirm" asp-route-id="@item.Id">Confirm</a>
+                            <a hidden class="btn btn-danger" asp-action="Decline" asp-route-id="@item.Id">Decline</a>
+                        }
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
